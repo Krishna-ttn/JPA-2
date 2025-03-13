@@ -8,30 +8,33 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface EmployeeRepository extends JpaRepository<Employee,Long> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
-    // 1) Get first name and last name of employees with salary > average salary, ordered by age ASC, salary DESC
+    //Get first name and last name of employees with salary > average salary, ordered by age ASC, salary DESC
     @Query("SELECT e.firstName, e.lastName FROM Employee e " +
             "WHERE e.salary > (SELECT AVG(e2.salary) FROM Employee e2) " +
             "ORDER BY e.age ASC, e.salary DESC")
     List<Object[]> findEmployeesWithSalaryGreaterThanAverage();
 
+    //Update salary of all employees by a salary passed as a parameter whose
+    //existing salary is less than the average salary.
     @Modifying
     @Transactional
     @Query("UPDATE Employee e SET e.salary = :newSalary " +
             "WHERE e.salary < (SELECT AVG(e2.salary) FROM Employee e2)")
     int updateSalaryForEmployeesBelowAverage(double newSalary);
 
+    //Delete all employees with minimum salary.
     @Modifying
     @Transactional
     @Query("DELETE FROM Employee e WHERE e.salary = (SELECT MIN(e2.salary) FROM Employee e2)")
     int deleteEmployeesWithMinSalary();
 
-    // 1) Get id, first name, age of employees where last name ends with "singh"
+    //Get id, first name, age of employees where last name ends with "singh"
     @Query(value = "SELECT empId, empFirstName, empAge FROM employeeTable WHERE empLastName LIKE '%singh'", nativeQuery = true)
     List<Object[]> findEmployeesWithLastNameSingh();
 
-    // 2) Delete employees with age > given age
+    //Delete employees with age > given age
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM employeeTable WHERE empAge > :age", nativeQuery = true)
