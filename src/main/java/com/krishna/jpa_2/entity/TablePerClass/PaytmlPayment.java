@@ -9,4 +9,5 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaytmlPayment extends Payment {
+    private String UpiNumber;
 }

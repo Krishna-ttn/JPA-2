@@ -29,18 +29,21 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
 
     //Delete all employees with minimum salary.
+    @Query("SELECT MIN(e.salary) FROM Employee e")
+    Double findMinSalary();
+
     @Modifying
     @Transactional
-    @Query("DELETE FROM Employee e WHERE e.salary = (SELECT MIN(e2.salary) FROM Employee e2)")
-    int deleteEmployeesWithMinSalary();
+    @Query("DELETE FROM Employee e WHERE e.salary = :minSalary")
+    int deleteEmployeesWithMinSalary(@Param("minSalary") Double minSalary);
 
     //Get id, first name, age of employees where last name ends with "singh"
-    @Query(value = "SELECT empId, empFirstName, empAge FROM employeeTable WHERE empLastName LIKE '%singh'", nativeQuery = true)
+    @Query(value = "SELECT emp_id, emp_first_name, emp_age FROM employeetable WHERE emp_last_name LIKE '%singh'", nativeQuery = true)
     List<Object[]> findEmployeesWithLastNameSingh();
 
     //Delete employees with age > given age
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM employeeTable WHERE empAge > :age", nativeQuery = true)
+    @Query(value = "DELETE FROM employeetable WHERE emp_age > :age", nativeQuery = true)
     int deleteEmployeesWithAgeGreaterThan(int age);
 }
